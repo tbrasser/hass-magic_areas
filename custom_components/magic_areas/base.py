@@ -176,6 +176,9 @@ class BinarySensorBase(MagicSensorBase, BinarySensorEntity, RestoreEntity):
 
     def sensor_state_change(self, entity_id, from_state, to_state):
 
+        if not to_state:
+            return None
+
         _LOGGER.debug(f"{self.name}: sensor '{entity_id}' changed to {to_state.state}")
 
         if to_state and to_state.state not in self.area.config.get(CONF_ON_STATES):
@@ -455,6 +458,11 @@ class MagicArea(object):
 
             # Get latest state and create object
             latest_state = self.hass.states.get(entity_id)
+            
+            if not latest_state:
+                _LOGGER.warn(f"Could not get state for {entity_id}.")
+                continue
+
             updated_entity = {"entity_id": entity_id}
 
             if latest_state:

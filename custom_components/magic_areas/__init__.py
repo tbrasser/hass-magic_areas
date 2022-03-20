@@ -13,6 +13,7 @@ from .base import MagicArea, MagicMetaArea
 from .const import (
     _DOMAIN_SCHEMA,
     AREA_TYPE_META,
+    CONF_ENABLED_FEATURES,
     CONF_ID,
     CONF_NAME,
     CONF_TYPE,
@@ -74,14 +75,30 @@ async def async_setup(hass, config):
         config_entry = {}
         source = SOURCE_USER
 
-        if area.id not in magic_areas_config.keys():
-            default_config = {f"{area.id}": {}}
-            config_entry = _DOMAIN_SCHEMA(default_config)[area.id]
-            _LOGGER.debug(
-                f"Configuration for area {area.name} not found on YAML, creating from default."
-            )
-        else:
-            config_entry = magic_areas_config[area.id]
+        # Generate Defaults
+        default_config_dict = {f"{area.id}": {}}
+        default_config_entry = _DOMAIN_SCHEMA(default_config_dict)[area.id]
+
+        config_entry = default_config_entry
+
+        if area.id in magic_areas_config.keys():
+
+            # Perform merge of stored config with defaults
+            try:
+                local_config_entry = magic_areas_config[area.id]
+
+                # 2.x fix - remove CONF_ENABLED_FEATURES key because
+                # it's now a dict and would overwrite, use defaults
+                if CONF_ENABLED_FEATURES in local_config_entry.keys():
+                    if type(local_config_entry.get(CONF_ENABLED_FEATURES)) is list:
+                        local_config_entry.pop(CONF_ENABLED_FEATURES)
+
+                config_entry.update(local_config_entry)
+            except Exception as e:
+                exc_str = str(e)
+                _LOGGER.error(f"Unable to merge local config with defaults for {area.name}. Please reconfigure this entry in the Integrations UI: {exc_str}.")
+                pass
+
             source = SOURCE_IMPORT
             _LOGGER.debug(
                 f"Configuration for area {area.name} found on YAML, loading from saved config."
