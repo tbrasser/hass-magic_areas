@@ -1,5 +1,3 @@
-DEPENDENCIES = ["magic_areas"]
-
 import logging
 
 import homeassistant.components.cover as cover
@@ -7,6 +5,9 @@ from homeassistant.components.group.cover import CoverGroup
 
 from .base import MagicEntity
 from .const import CONF_FEATURE_COVER_GROUPS, DATA_AREA_OBJECT, MODULE_DATA
+
+DEPENDENCIES = ["magic_areas"]
+
 
 _LOGGER = logging.getLogger(__name__)
 

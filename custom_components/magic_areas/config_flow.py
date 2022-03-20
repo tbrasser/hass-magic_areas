@@ -1,14 +1,12 @@
 import logging
 
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.components.media_player import DOMAIN as MEDIA_PLAYER_DOMAIN
 from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
-
-from custom_components.magic_areas.const import AVAILABLE_ON_STATES
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 
 from .const import (
     ALL_BINARY_SENSOR_DEVICE_CLASSES,
@@ -253,10 +251,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         errors = {}
         if user_input is not None:
             _LOGGER.debug(f"Validating area secondary states config: {user_input}")
-            AREA_state_schema = SECONDARY_STATES_SCHEMA
+            area_state_schema = SECONDARY_STATES_SCHEMA
             try:
                 self.area_options[CONF_SECONDARY_STATES].update(
-                    AREA_state_schema(user_input)
+                    area_state_schema(user_input)
                 )
             except vol.MultipleInvalid as validation:
                 errors = {error.path[0]: error.msg for error in validation.errors}
@@ -359,10 +357,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
         available_states = BUILTIN_AREA_STATES.copy()
 
-        LIGHT_GROUP_STATE_EXEMPT = [AREA_STATE_DARK]
+        light_group_state_exempt = [AREA_STATE_DARK]
         for extra_state, extra_state_opts in CONFIGURABLE_AREA_STATE_MAP.items():
             # Skip AREA_STATE_DARK because lights can't be tied to this state
-            if extra_state in LIGHT_GROUP_STATE_EXEMPT:
+            if extra_state in light_group_state_exempt:
                 continue
 
             extra_state_entity, extra_state_state = extra_state_opts

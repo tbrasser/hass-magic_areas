@@ -1,5 +1,3 @@
-DEPENDENCIES = ["magic_areas"]
-
 import logging
 
 from homeassistant.components.group.light import LightGroup
@@ -34,6 +32,9 @@ from .const import (
     LIGHT_GROUP_STATES,
     MODULE_DATA,
 )
+
+DEPENDENCIES = ["magic_areas"]
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -251,7 +252,7 @@ class AreaLightGroup(MagicEntity, LightGroup, RestoreEntity):
             f"{self.name} Has priority states? {has_priority_states}. Non-priority states: {non_priority_states}"
         )
 
-        ## ACT ON Control
+        # ACT ON Control
         # Do not act on occupancy change if not defined on act_on
         if (
             AREA_STATE_OCCUPIED in new_states

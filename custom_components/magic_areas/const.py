@@ -1,6 +1,5 @@
 from itertools import chain
 
-import voluptuous as vol
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_CONNECTIVITY,
     DEVICE_CLASS_DOOR,
@@ -16,8 +15,8 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_SMOKE,
     DEVICE_CLASS_VIBRATION,
     DEVICE_CLASS_WINDOW,
+    DOMAIN as BINARY_SENSOR_DOMAIN,
 )
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
 from homeassistant.components.cover import DOMAIN as COVER_DOMAIN
 from homeassistant.components.input_boolean import DOMAIN as INPUT_BOOLEAN_DOMAIN
@@ -40,6 +39,7 @@ from homeassistant.const import (
     STATE_PROBLEM,
 )
 from homeassistant.helpers import config_validation as cv
+import voluptuous as vol
 
 DOMAIN = "magic_areas"
 MODULE_DATA = f"{DOMAIN}_data"

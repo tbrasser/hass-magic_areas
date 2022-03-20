@@ -1,5 +1,3 @@
-DEPENDENCIES = ["magic_areas"]
-
 import logging
 
 from homeassistant.components.switch import SwitchEntity
@@ -18,6 +16,9 @@ from .const import (
     ICON_PRESENCE_HOLD,
     MODULE_DATA,
 )
+
+DEPENDENCIES = ["magic_areas"]
+
 
 _LOGGER = logging.getLogger(__name__)
 

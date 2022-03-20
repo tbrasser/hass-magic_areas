@@ -1,8 +1,7 @@
-import logging
 from datetime import datetime, timedelta
+import logging
 from statistics import mean
 
-import voluptuous as vol
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.const import (
     ATTR_ENTITY_ID,
@@ -18,6 +17,7 @@ from homeassistant.helpers.event import (
 )
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import slugify
+import voluptuous as vol
 
 from .const import (
     _DOMAIN_SCHEMA,

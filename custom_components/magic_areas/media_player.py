@@ -1,11 +1,12 @@
-DEPENDENCIES = ["media_player"]
-
 import logging
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.group.media_player import MediaGroup
-from homeassistant.components.media_player import DOMAIN as MEDIA_PLAYER_DOMAIN
-from homeassistant.components.media_player import SUPPORT_PLAY_MEDIA, MediaPlayerEntity
+from homeassistant.components.media_player import (
+    DOMAIN as MEDIA_PLAYER_DOMAIN,
+    SUPPORT_PLAY_MEDIA,
+    MediaPlayerEntity,
+)
 from homeassistant.components.media_player.const import (
     ATTR_MEDIA_CONTENT_ID,
     ATTR_MEDIA_CONTENT_TYPE,
@@ -14,8 +15,6 @@ from homeassistant.components.media_player.const import (
 from homeassistant.const import ATTR_ENTITY_ID, SERVICE_TURN_OFF, STATE_IDLE, STATE_ON
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.restore_state import RestoreEntity
-
-_LOGGER = logging.getLogger(__name__)
 
 from .base import MagicEntity
 from .const import (
@@ -32,6 +31,12 @@ from .const import (
     META_AREA_GLOBAL,
     MODULE_DATA,
 )
+
+DEPENDENCIES = ["media_player"]
+
+
+_LOGGER = logging.getLogger(__name__)
+
 
 _LOGGER = logging.getLogger(__name__)
 

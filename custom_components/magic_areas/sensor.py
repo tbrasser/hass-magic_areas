@@ -1,5 +1,3 @@
-DEPENDENCIES = ["magic_areas"]
-
 import logging
 
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
@@ -12,6 +10,9 @@ from .const import (
     DATA_AREA_OBJECT,
     MODULE_DATA,
 )
+
+DEPENDENCIES = ["magic_areas"]
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -86,7 +87,6 @@ async def load_sensors(hass, async_add_entities, area):
 
 class AreaSensorGroupSensor(AggregateBase, SensorBase):
     def __init__(self, hass, area, device_class, unit_of_measurement):
-
         """Initialize an area sensor group sensor."""
 
         self.area = area

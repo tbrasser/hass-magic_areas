@@ -4,14 +4,17 @@ adapted to work with Magic Areas.
 
 Once this goes into the main Home Assistant code it will be phased out.
 """
+from collections import Counter
 import itertools
 import logging
-from collections import Counter
 from typing import Any, Callable, Iterator, List, Optional
 
 from homeassistant.components import climate
-from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
-from homeassistant.components.climate import PLATFORM_SCHEMA, ClimateEntity
+from homeassistant.components.climate import (
+    DOMAIN as CLIMATE_DOMAIN,
+    PLATFORM_SCHEMA,
+    ClimateEntity,
+)
 from homeassistant.components.climate.const import *
 from homeassistant.const import (
     ATTR_ENTITY_ID,
@@ -183,11 +186,6 @@ class ClimateGroup(ClimateEntity):
     @property
     def target_temperature_high(self):
         return self._target_temp_high
-
-    @property
-    def should_poll(self):
-        """No polling needed for a climate group."""
-        return False
 
     @property
     def should_poll(self):

@@ -1,13 +1,12 @@
 """Magic Areas component for Home Assistant."""
 
-import asyncio
 import logging
 
-import voluptuous as vol
 from homeassistant.config_entries import SOURCE_IMPORT, SOURCE_USER, ConfigEntry
 from homeassistant.const import CONF_SOURCE, EVENT_HOMEASSISTANT_STARTED
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.area_registry import AreaEntry
+import voluptuous as vol
 
 from .base import MagicArea, MagicMetaArea
 from .const import (

@@ -1,13 +1,11 @@
-DEPENDENCIES = ["magic_areas", "media_player", "binary_sensor"]
-
-import logging
 from datetime import datetime, timedelta
+import logging
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_OCCUPANCY,
     DEVICE_CLASS_PROBLEM,
+    DOMAIN as BINARY_SENSOR_DOMAIN,
 )
-from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
@@ -66,6 +64,9 @@ from .const import (
     EVENT_MAGICAREAS_AREA_STATE_CHANGED,
     MODULE_DATA,
 )
+
+DEPENDENCIES = ["magic_areas", "media_player", "binary_sensor"]
+
 
 _LOGGER = logging.getLogger(__name__)
 
