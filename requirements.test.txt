@@ -1,0 +1,6 @@
+# Strictly for tests
+codecov
+coverage
+pytest
+pytest-cov
+pytest-homeassistant-custom-component
