@@ -32,7 +32,7 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 
-async def async_setup(hass, config):
+async def async_setup(hass, config, test_run=False):
     """Set up areas."""
 
     # Load registries
@@ -62,11 +62,15 @@ async def async_setup(hass, config):
     # Add Meta Areas to area list
     for meta_area in META_AREAS:
         _LOGGER.debug(f"Appending Meta Area {meta_area} to the list of areas")
-        areas.append(
-            AreaEntry(
+
+        if test_run:
+            area_entry_object = AreaEntry(name=meta_area, id=meta_area.lower())
+        else:
+            area_entry_object = AreaEntry(
                 name=meta_area, normalized_name=meta_area.lower(), id=meta_area.lower()
             )
-        )
+
+        areas.append(area_entry_object)
 
     for area in areas:
         _LOGGER.debug(f"Creating/loading configuration for {area.name}.")
@@ -86,7 +90,7 @@ async def async_setup(hass, config):
                 f"Configuration for area {area.name} found on YAML, loading from saved config."
             )
 
-        if area.normalized_name in reserved_names:
+        if area.id in reserved_names:
             _LOGGER.debug(f"Meta area {area.name} found, setting correct type.")
             config_entry.update({CONF_TYPE: AREA_TYPE_META})
 
@@ -107,6 +111,8 @@ async def async_setup(hass, config):
                 DOMAIN, context={CONF_SOURCE: source}, data=config_entry
             )
         )
+
+        return True
 
     async def async_check_all_ready(event) -> bool:
 
