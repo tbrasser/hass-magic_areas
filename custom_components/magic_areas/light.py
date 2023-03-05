@@ -84,16 +84,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 )
                 light_groups.append(light_group_object)
 
-                # Infer light group entity id from name
-                light_group_id = f"{LIGHT_DOMAIN}.{category.lower()}_{area.slug}"
-                light_group_ids.append(light_group_id)
 
         _LOGGER.debug(
             f"Creating Area light group for area {area.name} with lights: {light_group_ids}"
         )
+
+        # All Lights
         light_groups.append(
             AreaLightGroup(
-                hass, area, light_entities, category=None, child_ids=light_group_ids
+                hass, area, light_entities, category=None
             )
         )
 
@@ -102,7 +101,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class AreaLightGroup(MagicEntity, LightGroup, RestoreEntity):
-    def __init__(self, hass, area, entities, category=None, child_ids=[]):
+    def __init__(self, hass, area, entities, category=None):
         name = f"{area.name} Lights"
 
         if category:
@@ -111,7 +110,6 @@ class AreaLightGroup(MagicEntity, LightGroup, RestoreEntity):
 
         self._name = name
         self._entities = entities
-        self._child_ids = child_ids
 
         self.hass = hass
         self.area = area
@@ -146,9 +144,6 @@ class AreaLightGroup(MagicEntity, LightGroup, RestoreEntity):
         self._attributes["lights"] = self._entities
         self._attributes["controlling"] = self.controlling
 
-        if not self.category:
-            self._attributes["child_ids"] = self._child_ids
-
         _LOGGER.debug(
             f"Light group {self._name} ({category}/{self._icon}) created with entities: {self._entities}"
         )
@@ -167,33 +162,15 @@ class AreaLightGroup(MagicEntity, LightGroup, RestoreEntity):
             )
         )
 
-    def is_child_controllable(self, entity_id):
-        entity_object = self.hass.states.get(entity_id)
-        if "controlling" in entity_object.attributes.keys():
-            return entity_object.attributes["controlling"]
-
-        return False
-
-    def handle_group_state_change_primary(self):
-        controlling = False
-
-        for entity_id in self._child_ids:
-            if self.is_child_controllable(entity_id):
-                controlling = True
-                break
-
-        self.controlling = controlling
-        self.schedule_update_ha_state()
-
-    def handle_group_state_change_secondary(self):
+    def handle_group_state_change(self):
         # If we changed last, unset
         if self.controlled:
             self.controlled = False
-            _LOGGER.debug(f"{self.name}: Group controlled by us.")
+            _LOGGER.warn(f"{self.name}: Group controlled by us.")
         else:
             # If not, it was manually controlled, stop controlling
             self.controlling = False
-            _LOGGER.debug(f"{self.name}: Group controlled by something else.")
+            _LOGGER.warn(f"{self.name}: Group controlled by something else.")
 
     def group_state_changed(self, event):
         # If area is not occupied, ignore
@@ -201,10 +178,9 @@ class AreaLightGroup(MagicEntity, LightGroup, RestoreEntity):
             self._reset_control()
         else:
             origin_event = event.context.origin_event
+            _LOGGER.warn(f"{self.name}: Origin event: {origin_event}")
 
-            if not self.category:
-                self.handle_group_state_change_primary()
-            else:
+            if self.category:
                 # Ignore certain events
                 if origin_event.event_type == "state_changed":
                     # Skip non ON/OFF state changes
@@ -226,7 +202,7 @@ class AreaLightGroup(MagicEntity, LightGroup, RestoreEntity):
                     ):
                         return False
 
-                self.handle_group_state_change_secondary()
+                self.handle_group_state_change()
 
         # Update attribute
         self._attributes["controlling"] = self.controlling
@@ -280,6 +256,7 @@ class AreaLightGroup(MagicEntity, LightGroup, RestoreEntity):
 
     def _reset_control(self):
         self.controlling = True
+        self.controlled = False
         self._attributes["controlling"] = self.controlling
         self.schedule_update_ha_state()
         _LOGGER.debug("{self.name}: Control Reset.")
